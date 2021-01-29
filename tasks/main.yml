@@ -1,2 +1,156 @@
 ---
-# tasks file for firewall
+# install and configure firewall using UFW
+
+- name: install UFW
+  package:
+    name: ufw
+    state: present
+    update_cache: yes
+  become: yes
+
+- name: deny all traffic
+  community.general.ufw:
+    default: deny
+  become: yes
+  tags:
+    - firewall_config
+
+
+##
+## SSH rules
+##
+
+- name: allow SSH access from anywhere
+  community.general.ufw:
+    rule: allow
+    proto: tcp
+    to_port: "{{ firewall_ssh_port }}"
+  become: yes
+  when: firewall_ssh_from is not defined
+  tags:
+    - firewall_config
+
+- name: allow SSH access from specific hosts/networks
+  community.general.ufw:
+    rule: allow
+    from_ip: "{{ item }}"
+    proto: tcp
+    to_port: "{{ firewall_ssh_port }}"
+  loop: firewall_ssh_from
+  become: yes
+  when: firewall_ssh_from is defined
+  tags:
+    - firewall_config
+
+- name: rate-limit SSH connections
+  community.general.ufw:
+    rule: limit
+    proto: tcp
+    to_port: "{{ firewall_ssh_port }}"
+  become: yes
+  tags:
+    - firewall_config
+
+- name: block SSH on default port if alternate in use
+  community.general.ufw:
+    delete: yes
+    rule: allow
+    to_port: 22
+  when: firewall_ssh_port != 22
+  become: yes
+  tags:
+    - firewall_config
+
+
+##
+## HTTP rules
+##
+
+- name: allow HTTP access from anywhere
+  community.general.ufw:
+    rule: allow
+    to_port: 80
+  become: yes
+  when: firewall_allow_http and firewall_http_from is not defined
+  tags:
+    - firewall_config
+
+- name: allow HTTP access from specific hosts/networks
+  community.general.ufw:
+    rule: allow
+    from_ip: "{{ item }}"
+    to_port: 80
+  loop: firewall_http_from
+  become: yes
+  when: firewall_allow_http and firewall_http_from is defined
+  tags:
+    - firewall_config
+
+
+##
+## HTTPS rules
+##
+
+- name: allow HTTPS access from anywhere
+  community.general.ufw:
+    rule: allow
+    to_port: 443
+  become: yes
+  when: firewall_allow_https and firewall_https_from is not defined
+  tags:
+    - firewall_config
+
+- name: allow HTTPS access from specific hosts/networks
+  community.general.ufw:
+    rule: allow
+    from_ip: "{{ item }}"
+    to_port: 443
+  loop: firewall_https_from
+  become: yes
+  when: firewall_allow_https and firewall_https_from is defined
+  tags:
+    - firewall_config
+
+
+##
+## Custom rules
+##
+
+- name: set specific firewall rules
+  community.general.ufw:
+    rule: "{{ item.rule }}"
+    from_ip: "{{ item.from_ip }}"
+    proto: "{{ item.proto|default(any) }}"
+    to_port: "{{ item.to_port }}"
+  loop: firewall_rules
+  become: yes
+  when: firewall_rules is defined
+  tags:
+    - firewall_config
+
+
+##
+## Security rules
+##
+
+- name: remove access to the DHCP v6 client service
+  community.general.ufw:
+    delete: yes
+    rule: allow
+    proto: udp
+    to_port: "{{ item }}"
+  loop:
+    - 546
+    - 547
+  become: yes
+  tags:
+    - firewall_config
+
+
+- name: enable UFW
+  community.general.ufw:
+    state: enabled
+  become: yes
+  when: firewall_enabled
+  tags:
+    - firewall_config
