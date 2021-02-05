@@ -1,7 +1,9 @@
 paulrentschler.firewall
 =======================
 
-Installs and configures the firewall on Ubuntu Linux machines.
+[![MIT licensed][mit-badge]][mit-link]
+
+Installs and configures the firewall on Ubuntu Linux.
 
 
 Requirements
@@ -126,10 +128,14 @@ Complex example that enables the firewall, limits SSH traffic from one IP to a n
 License
 -------
 
-MIT
+[MIT][mit-link]
 
 
 Author Information
 ------------------
 
 Created by Paul Rentschler in 2021.
+
+
+[mit-badge]: https://img.shields.io/badge/license-MIT-blue.svg
+[mit-link]: https://github.com/paulrentschler/ansible-role-firewall/blob/master/LICENSE
