@@ -120,7 +120,7 @@
   community.general.ufw:
     rule: "{{ item.rule }}"
     from_ip: "{{ item.from_ip }}"
-    proto: "{{ item.proto|default(any) }}"
+    proto: "{{ item.proto|default('any') }}"
     to_port: "{{ item.to_port }}"
   loop: "{{ firewall_rules }}"
   become: yes
