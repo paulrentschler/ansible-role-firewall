@@ -2,7 +2,7 @@
 # default values for the firewall variables
 
 firewall_enabled: yes
-firewall_ssh_port: "{{ ansible_ssh_port }}"
+firewall_ssh_port: "22"
 
 ##
 # To restrict what machines can connect via SSH, use:
