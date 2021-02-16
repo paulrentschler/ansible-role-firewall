@@ -36,7 +36,7 @@
     from_ip: "{{ item }}"
     proto: tcp
     to_port: "{{ firewall_ssh_port }}"
-  loop: firewall_ssh_from
+  loop: "{{ firewall_ssh_from }}"
   become: yes
   when: firewall_ssh_from is defined
   tags:
@@ -55,8 +55,8 @@
   community.general.ufw:
     delete: yes
     rule: allow
-    to_port: 22
-  when: firewall_ssh_port != 22
+    to_port: "22"
+  when: firewall_ssh_port != "22"
   become: yes
   tags:
     - firewall_config
@@ -69,7 +69,7 @@
 - name: allow HTTP access from anywhere
   community.general.ufw:
     rule: allow
-    to_port: 80
+    to_port: "80"
   become: yes
   when: firewall_allow_http and firewall_http_from is not defined
   tags:
@@ -79,8 +79,8 @@
   community.general.ufw:
     rule: allow
     from_ip: "{{ item }}"
-    to_port: 80
-  loop: firewall_http_from
+    to_port: "80"
+  loop: "{{ firewall_http_from }}"
   become: yes
   when: firewall_allow_http and firewall_http_from is defined
   tags:
@@ -94,7 +94,7 @@
 - name: allow HTTPS access from anywhere
   community.general.ufw:
     rule: allow
-    to_port: 443
+    to_port: "443"
   become: yes
   when: firewall_allow_https and firewall_https_from is not defined
   tags:
@@ -104,8 +104,8 @@
   community.general.ufw:
     rule: allow
     from_ip: "{{ item }}"
-    to_port: 443
-  loop: firewall_https_from
+    to_port: "443"
+  loop: "{{ firewall_https_from }}"
   become: yes
   when: firewall_allow_https and firewall_https_from is defined
   tags:
@@ -122,7 +122,7 @@
     from_ip: "{{ item.from_ip }}"
     proto: "{{ item.proto|default(any) }}"
     to_port: "{{ item.to_port }}"
-  loop: firewall_rules
+  loop: "{{ firewall_rules }}"
   become: yes
   when: firewall_rules is defined
   tags:
@@ -140,8 +140,8 @@
     proto: udp
     to_port: "{{ item }}"
   loop:
-    - 546
-    - 547
+    - "546"
+    - "547"
   become: yes
   tags:
     - firewall_config
