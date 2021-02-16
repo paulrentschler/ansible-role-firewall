@@ -36,7 +36,7 @@
     from_ip: "{{ item }}"
     proto: tcp
     to_port: "{{ firewall_ssh_port }}"
-  loop: "{{ firewall_ssh_from }}"
+  loop: "{{ firewall_ssh_from | flatten }}"
   become: yes
   when: firewall_ssh_from is defined
   tags:
@@ -80,7 +80,7 @@
     rule: allow
     from_ip: "{{ item }}"
     to_port: "80"
-  loop: "{{ firewall_http_from }}"
+  loop: "{{ firewall_http_from | flatten }}"
   become: yes
   when: firewall_allow_http and firewall_http_from is defined
   tags:
@@ -105,7 +105,7 @@
     rule: allow
     from_ip: "{{ item }}"
     to_port: "443"
-  loop: "{{ firewall_https_from }}"
+  loop: "{{ firewall_https_from | flatten }}"
   become: yes
   when: firewall_allow_https and firewall_https_from is defined
   tags:
