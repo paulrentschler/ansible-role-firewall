@@ -42,14 +42,14 @@
   tags:
     - firewall_config
 
-- name: rate-limit SSH connections
-  community.general.ufw:
-    rule: limit
-    proto: tcp
-    to_port: "{{ firewall_ssh_port }}"
-  become: yes
-  tags:
-    - firewall_config
+# - name: rate-limit SSH connections
+#   community.general.ufw:
+#     rule: limit
+#     proto: tcp
+#     to_port: "{{ firewall_ssh_port }}"
+#   become: yes
+#   tags:
+#     - firewall_config
 
 - name: block SSH on default port if alternate in use
   community.general.ufw:
