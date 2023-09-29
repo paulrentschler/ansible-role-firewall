@@ -1,0 +1,12 @@
+---
+# remove firewall SSH access for a specific list of hosts/networks using UFW
+
+- name: remove SSH access from specific hosts/networks
+  community.general.ufw:
+    delete: true
+    rule: allow
+    from_ip: "{{ item }}"
+    proto: tcp
+    to_port: "{{ firewall_ssh_port }}"
+  loop: "{{ firewall_ssh_from | flatten }}"
+  become: yes
